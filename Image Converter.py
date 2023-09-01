@@ -3,6 +3,7 @@ from ui import Ui_MainWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PIL import Image
 import pillow_avif
+import threading
 
 
 class MainWindow(QMainWindow):
@@ -26,7 +27,8 @@ class MainWindow(QMainWindow):
     def saveFile(self):
         self.saveFilePath = QFileDialog.getSaveFileName(self, "Save File", "", "All Supported Images(*.png *.jpeg *.webp)")[0]
         if self.saveFilePath:
-            self.converter()
+            self.ui.exportBtn.setEnabled(False)
+            threading.Thread(target=self.converter, args=[]).start()
 
 
     def converter(self):
@@ -43,9 +45,9 @@ class MainWindow(QMainWindow):
             img = Image.open(self.openFilePath)
             img = img.convert("RGB")
             if self.saveFilePath.endswith(".jpeg"):
-                img.save(self.saveFilePath, format="JPEG", quality=100, optimize=True)
+                img.save(self.saveFilePath, format="JPEG", quality=50, optimize=True)
             else:
-                img.save(f"{self.saveFilePath[:-4]}.jpeg", format="JPEG", quality=100, optimize=True)
+                img.save(f"{self.saveFilePath}.jpeg", format="JPEG", quality=50, optimize=True)
 
         # WEBP
         if self.ui.typeComboBox.currentText() == "WEBP":
@@ -54,6 +56,8 @@ class MainWindow(QMainWindow):
                 img.save(self.saveFilePath, format="WEBP")
             else:
                 img.save(f"{self.saveFilePath}.webp", format="WEBP")
+
+        self.ui.exportBtn.setEnabled(True)
 
 
 
