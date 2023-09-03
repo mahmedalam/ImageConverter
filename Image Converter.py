@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
             img = Image.open(self.openFilePath)
             img = img.convert("RGB")
             if self.saveFilePath.endswith(".jpeg"):
-                img.save(self.saveFilePath, format="JPEG", quality=50, optimize=True)
+                img.save(self.saveFilePath, format="JPEG", quality=100, optimize=True)
             else:
                 img.save(f"{self.saveFilePath}.jpeg", format="JPEG", quality=50, optimize=True)
 
